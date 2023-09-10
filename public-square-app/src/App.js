@@ -15,7 +15,7 @@ import { TopicSearch } from "./components/TopicSearch";
 import { UserSearch } from "./components/UserSearch";
 import "./App.css";
 import { buildQuery, arweave, createPostInfo, delayResults } from "./lib/api";
-
+import { NewPost } from "./components/NewPost";
 async function getPostInfos() {
   const query = buildQuery();
   const results = await arweave.api.post("/graphql", query).catch((err) => {
@@ -31,6 +31,7 @@ async function getPostInfos() {
 }
 
 const App = () => {
+  const [isWalletConnected, setIsWalletConnected] = React.useState(false);
   const [postInfos, setPostInfos] = React.useState([]);
   const [isSearching, setIsSearching] = React.useState(false);
 
@@ -47,13 +48,22 @@ const App = () => {
       <div id="content">
         <aside>
           <Navigation />
+          <WalletSelectButton
+            setIsConnected={() => setIsWalletConnected(true)}
+          />
         </aside>
         <main>
           <Routes>
             <Route
               path="/"
               name="home"
-              element={<Home isSearching={isSearching} postInfos={postInfos} />}
+              element={
+                <Home
+                  isSearching={isSearching}
+                  postInfos={postInfos}
+                  isWalletConnected={isWalletConnected}
+                />
+              }
             />
             <Route path="/topics" element={<Topics />}>
               <Route path="/topics/" element={<TopicSearch />} />
@@ -74,6 +84,7 @@ const Home = (props) => {
   return (
     <>
       <header>Home</header>
+      <NewPost isLoggedIn={props.isWalletConnected} />
       {props.isSearching && <ProgressSpinner />}
       <Posts postInfos={props.postInfos} />
 
