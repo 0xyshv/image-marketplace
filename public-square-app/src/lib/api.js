@@ -20,7 +20,19 @@ export const createPostInfo = (node) => {
     height: height,
     length: node.data.size,
     timestamp: timestamp,
+    request: null,
   };
+  if (postInfo.length <= maxMessageLength) {
+    postInfo.request = arweave.api
+      .get(`/${node.id}`, { timeout: 10000 })
+      .catch(() => {
+        postInfo.error = "timeout loading data";
+      });
+  } else {
+    postInfo.error = `message is too large (exceeds ${
+      maxMessageLength / 1024
+    }kb)`;
+  }
   return postInfo;
 };
 

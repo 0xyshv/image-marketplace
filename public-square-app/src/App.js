@@ -14,7 +14,7 @@ import { ProgressSpinner } from "./components/ProgressSpinner";
 import { TopicSearch } from "./components/TopicSearch";
 import { UserSearch } from "./components/UserSearch";
 import "./App.css";
-import { buildQuery, arweave, createPostInfo } from "./lib/api";
+import { buildQuery, arweave, createPostInfo, delayResults } from "./lib/api";
 
 async function getPostInfos() {
   const query = buildQuery();
@@ -24,7 +24,10 @@ async function getPostInfos() {
   });
   const edges = results.data.data.transactions.edges;
   console.log(edges);
-  return edges.map((edge) => createPostInfo(edge.node));
+  return await delayResults(
+    100,
+    edges.map((edge) => createPostInfo(edge.node))
+  );
 }
 
 const App = () => {
