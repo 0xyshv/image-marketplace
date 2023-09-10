@@ -1,3 +1,6 @@
+import Arweave from "arweave";
+export const arweave = Arweave.init({});
+
 export const maxMessageLength = 1024;
 
 export const isWellFormattedAddress = (input) => {

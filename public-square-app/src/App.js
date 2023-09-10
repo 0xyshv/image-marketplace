@@ -14,14 +14,29 @@ import { ProgressSpinner } from "./components/ProgressSpinner";
 import { TopicSearch } from "./components/TopicSearch";
 import { UserSearch } from "./components/UserSearch";
 import "./App.css";
+import { buildQuery, arweave, createPostInfo } from "./lib/api";
 
 async function getPostInfos() {
-  return [];
+  const query = buildQuery();
+  const results = await arweave.api.post("/graphql", query).catch((err) => {
+    console.error("GraphQL query failed");
+    throw new Error(err);
+  });
+  const edges = results.data.data.transactions.edges;
+  console.log(edges);
+  return edges.map((edge) => createPostInfo(edge.node));
 }
 
 const App = () => {
+  const [postInfos, setPostInfos] = React.useState([]);
+  const [isSearching, setIsSearching] = React.useState(false);
+
   React.useEffect(() => {
-    getPostInfos();
+    setIsSearching(true);
+    getPostInfos().then((posts) => {
+      setPostInfos(posts);
+      setIsSearching(false);
+    });
   }, []);
 
   return (
@@ -32,7 +47,11 @@ const App = () => {
         </aside>
         <main>
           <Routes>
-            <Route path="/" name="home" element={<Home />} />
+            <Route
+              path="/"
+              name="home"
+              element={<Home isSearching={isSearching} postInfos={postInfos} />}
+            />
             <Route path="/topics" element={<Topics />}>
               <Route path="/topics/" element={<TopicSearch />} />
               <Route path=":topic" element={<TopicResults />} />
@@ -52,9 +71,12 @@ const Home = (props) => {
   return (
     <>
       <header>Home</header>
-      <h1 className="text-3xl font-bold underline text-red-600">
+      {props.isSearching && <ProgressSpinner />}
+      <Posts postInfos={props.postInfos} />
+
+      {/* <h1 className="text-3xl font-bold underline text-red-600">
         Hello world!
-      </h1>
+      </h1> */}
     </>
   );
 };
