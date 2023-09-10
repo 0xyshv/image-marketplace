@@ -18,6 +18,17 @@ export const WalletSelectButton = (props) => {
   const [activeWallet, setActiveWallet] = React.useState(NONE);
   const [addressText, setAddressText] = React.useState("xxxxx...xxx");
 
+  async function checkForWallet() {
+    let address = await window.arweaveWallet.getActiveAddress();
+    if (address) {
+      const firstFive = address.substring(0, 5);
+      const lastFive = address.substring(address.length - 5);
+      setAddressText(`${firstFive}...${lastFive}`);
+      props.setIsConnected(true);
+    }
+    setActiveWallet(AR_CONNECT);
+  }
+
   async function onWalletSelected(walletName) {
     let address = await window.arweaveWallet.getActiveAddress();
     if (address) {
@@ -33,6 +44,10 @@ export const WalletSelectButton = (props) => {
     setActiveWallet(NONE);
     props.setIsConnected(false);
   }
+
+  useEffect(() => {
+    checkForWallet();
+  }, []);
 
   return (
     <>
@@ -87,13 +102,13 @@ const WalletModal = (props) => {
           "DISPATCH",
         ]);
         break;
-      // case ARWEAVE_APP:
-      //   await webWallet.connect();
-      //   webWallet.on("change", () => {
-      //     if (!webWallet.address && props.onDisconnected)
-      //       props.onDisconnected();
-      //   });
-      //   break;
+      case ARWEAVE_APP:
+        await webWallet.connect();
+        webWallet.on("change", () => {
+          if (!webWallet.address && props.onDisconnected)
+            props.onDisconnected();
+        });
+        break;
       default:
         throw new Error(`Attempted to connect unknown wallet ${walletName}`);
     }
