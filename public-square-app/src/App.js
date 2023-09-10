@@ -1,23 +1,28 @@
-import React from 'react';
-import { Routes, Route, Outlet, useParams, useNavigate } from 'react-router-dom';
-import { Navigation } from './components/Navigation';
-import { WalletSelectButton } from './components/WalletSelectButton';
-import { ProfileButton } from './components/ProfileButton';
-import { Posts } from './components/Posts';
-import { ProgressSpinner } from './components/ProgressSpinner';
-import { TopicSearch } from './components/TopicSearch';
-import { UserSearch } from './components/UserSearch';
-import './App.css';
+import React from "react";
+import {
+  Routes,
+  Route,
+  Outlet,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
+import { Navigation } from "./components/Navigation";
+import { WalletSelectButton } from "./components/WalletSelectButton";
+import { ProfileButton } from "./components/ProfileButton";
+import { Posts } from "./components/Posts";
+import { ProgressSpinner } from "./components/ProgressSpinner";
+import { TopicSearch } from "./components/TopicSearch";
+import { UserSearch } from "./components/UserSearch";
+import "./App.css";
 
 async function getPostInfos() {
   return [];
 }
 
 const App = () => {
-  
   React.useEffect(() => {
     getPostInfos();
-  }, [])
+  }, []);
 
   return (
     <div id="app">
@@ -27,11 +32,7 @@ const App = () => {
         </aside>
         <main>
           <Routes>
-            <Route path="/" name="home" element={
-            <Home 
-
-            />}
-            />
+            <Route path="/" name="home" element={<Home />} />
             <Route path="/topics" element={<Topics />}>
               <Route path="/topics/" element={<TopicSearch />} />
               <Route path=":topic" element={<TopicResults />} />
@@ -51,6 +52,9 @@ const Home = (props) => {
   return (
     <>
       <header>Home</header>
+      <h1 className="text-3xl font-bold underline text-red-600">
+        Hello world!
+      </h1>
     </>
   );
 };
@@ -81,13 +85,13 @@ const TopicResults = () => {
 
   const onTopicSearch = (topic) => {
     navigate(`/topics/${topic}`);
-  }
+  };
 
   React.useEffect(() => {
     setIsSearching(true);
     setTopicPostInfos([]);
     try {
-      getPostInfos(null,topic).then(posts => { 
+      getPostInfos(null, topic).then((posts) => {
         setTopicPostInfos(posts);
         setIsSearching(false);
       });
@@ -95,15 +99,15 @@ const TopicResults = () => {
       console.logErrorg(error);
       setIsSearching(false);
     }
-  }, [topic])
+  }, [topic]);
   return (
     <>
-    <TopicSearch searchInput={topic} onSearch={onTopicSearch}/>
-    {isSearching && <ProgressSpinner />}
-    <Posts postInfos={topicPostInfos} />
+      <TopicSearch searchInput={topic} onSearch={onTopicSearch} />
+      {isSearching && <ProgressSpinner />}
+      <Posts postInfos={topicPostInfos} />
     </>
-  )
-}
+  );
+};
 
 function UserResults() {
   const [userPostInfos, setUserPostInfos] = React.useState([]);
@@ -113,27 +117,27 @@ function UserResults() {
 
   const onUserSearch = (address) => {
     navigate(`/users/${address}`);
-  }
+  };
 
   React.useEffect(() => {
     setIsSearching(true);
     try {
-      getPostInfos(addr).then(posts => { 
-        setUserPostInfos(posts); 
+      getPostInfos(addr).then((posts) => {
+        setUserPostInfos(posts);
         setIsSearching(false);
       });
     } catch (error) {
       console.logErrorg(error);
       setIsSearching(false);
     }
-  }, [addr])
+  }, [addr]);
   return (
     <>
-    <UserSearch searchInput={addr} onSearch={onUserSearch}/>
-    {isSearching && <ProgressSpinner />}
-    <Posts postInfos={userPostInfos} />
+      <UserSearch searchInput={addr} onSearch={onUserSearch} />
+      {isSearching && <ProgressSpinner />}
+      <Posts postInfos={userPostInfos} />
     </>
   );
-};
+}
 
 export default App;
