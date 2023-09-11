@@ -22,42 +22,64 @@ const PostItem = (props) => {
   );
 
   React.useEffect(() => {
-    let newPostMessage = "";
-    let newStatus = "";
+    const getAccountInfo = async () => {
+      setOwnerName(abbreviateAddress(props.postInfo.owner));
+      const info = await props.postInfo.account;
+      if (info?.handle?.startsWith("@")) {
+        props.postInfo.imgSrc = info.profile.avatarURL;
+        setImgSrc(info.profile.avatarURL);
+        setOwnerName(info.profile.name);
+        setOwnerHandle(info.handle);
+      } else {
+        setOwnerName(info.handle);
+      }
+    };
+    getAccountInfo();
+  }, [props.postInfo]);
+
+  const renderTopic = (topic) => {
+    if (topic)
+      return (
+        <Link to={`/topics/${topic}`} className="postTopic">
+          #{topic}
+        </Link>
+      );
+  };
+
+  React.useEffect(() => {
+    let isCancelled = false;
+
+    const getPostMessage = async () => {
+      setPostMessage(
+        "s".repeat(
+          Math.min(Math.max(props.postInfo.length - 75, 0), maxMessageLength)
+        )
+      );
+      const response = await props.postInfo.request;
+      let newStatus = "";
+      let newPostMessage = "";
+
+      switch (response?.status) {
+        case 200:
+        case 202:
+          props.postInfo.message = response.data.toString();
+          newPostMessage = props.postInfo.message;
+          break;
+        case 404:
+          newStatus = "Not Found";
+          break;
+        default:
+          newStatus = props.postInfo?.error || "missing data";
+      }
+
+      if (!isCancelled) {
+        setPostMessage(newPostMessage);
+        setStatusMessage(newStatus);
+      }
+    };
 
     if (!props.postInfo.message) {
       setStatusMessage("loading...");
-      let isCancelled = false;
-
-      const getPostMessage = async () => {
-        setPostMessage(
-          "s".repeat(
-            Math.min(Math.max(props.postInfo.length - 75, 0), maxMessageLength)
-          )
-        );
-        const response = await props.postInfo.request;
-        switch (response?.status) {
-          case 200:
-          case 202:
-            props.postInfo.message = response.data.toString();
-            newStatus = "";
-            newPostMessage = props.postInfo.message;
-            break;
-          case 404:
-            newStatus = "Not Found";
-            break;
-          default:
-            newStatus = props.postInfo?.error;
-            if (!newStatus) {
-              newStatus = "missing data";
-            }
-        }
-
-        if (isCancelled) return;
-
-        setPostMessage(newPostMessage);
-        setStatusMessage(newStatus);
-      };
 
       if (props.postInfo.error) {
         setPostMessage("");
@@ -65,14 +87,17 @@ const PostItem = (props) => {
       } else {
         getPostMessage();
       }
-      return () => (isCancelled = true);
     }
+
+    return () => {
+      isCancelled = true;
+    };
   }, [props.postInfo]);
 
   return (
     <div className="postItem">
       <div className="postLayout">
-        <img className="profileImage" src={imgSrc} alt="ProfileImage" />
+        <img className="profileImage" src={imgSrc} alt="Profile" />
         <div>
           <div className="postOwnerRow">
             <Link to={`/users/${props.postInfo.owner}`}>{ownerName}</Link>
@@ -86,6 +111,7 @@ const PostItem = (props) => {
             {props.postInfo.message || postMessage}
             {statusMessage && <div className="status"> {statusMessage}</div>}
           </div>
+          {renderTopic(props.postInfo.topic)}
         </div>
       </div>
     </div>

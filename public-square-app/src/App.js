@@ -16,13 +16,33 @@ import { UserSearch } from "./components/UserSearch";
 import "./App.css";
 import { buildQuery, arweave, createPostInfo, delayResults } from "./lib/api";
 import { NewPost } from "./components/NewPost";
-async function getPostInfos() {
-  const query = buildQuery();
+
+async function waitForNewPosts(txid) {
+  let count = 0;
+  let foundPost = null;
+  let posts = [];
+
+  while (!foundPost) {
+    count += 1;
+    console.log(`attempt ${count}`);
+    await (2000 * count);
+    posts = await getPostInfos();
+    foundPost = posts.find((p) => p.txid === txid);
+  }
+
+  let i = posts.indexOf(foundPost);
+  posts.unshift(posts.splice(i, 1)[0]);
+  return posts;
+}
+
+async function getPostInfos(ownerAddress, topic) {
+  const query = buildQuery({ address: ownerAddress, topic });
   const results = await arweave.api.post("/graphql", query).catch((err) => {
     console.error("GraphQL query failed");
     throw new Error(err);
   });
-  const edges = results.data.data.transactions.edges;
+  // const edges = results.data.data.transactions.edges;🟡
+  const edges = results?.data?.data?.transactions?.edges || [];
   console.log(edges);
   return await delayResults(
     100,
@@ -34,7 +54,12 @@ const App = () => {
   const [isWalletConnected, setIsWalletConnected] = React.useState(false);
   const [postInfos, setPostInfos] = React.useState([]);
   const [isSearching, setIsSearching] = React.useState(false);
-
+  async function waitForPost(txid) {
+    setIsSearching(true);
+    let posts = await waitForNewPosts(txid);
+    setPostInfos(posts);
+    setIsSearching(false);
+  }
   React.useEffect(() => {
     setIsSearching(true);
     getPostInfos().then((posts) => {
@@ -51,6 +76,7 @@ const App = () => {
           <WalletSelectButton
             setIsConnected={() => setIsWalletConnected(true)}
           />
+          <ProfileButton isWalletConnected={isWalletConnected} />
         </aside>
         <main>
           <Routes>
@@ -59,9 +85,10 @@ const App = () => {
               name="home"
               element={
                 <Home
+                  isWalletConnected={isWalletConnected}
                   isSearching={isSearching}
                   postInfos={postInfos}
-                  isWalletConnected={isWalletConnected}
+                  onPostMessage={waitForPost}
                 />
               }
             />
@@ -84,7 +111,10 @@ const Home = (props) => {
   return (
     <>
       <header>Home</header>
-      <NewPost isLoggedIn={props.isWalletConnected} />
+      <NewPost
+        isLoggedIn={props.isWalletConnected}
+        onPostMessage={props.onPostMessage}
+      />
       {props.isSearching && <ProgressSpinner />}
       <Posts postInfos={props.postInfos} />
 
