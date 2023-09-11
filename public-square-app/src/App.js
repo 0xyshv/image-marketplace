@@ -71,12 +71,12 @@ const App = () => {
   return (
     <div id="app">
       <div id="content">
-        <aside>
+        <aside className="flex flex-row">
           <Navigation />
           <WalletSelectButton
             setIsConnected={() => setIsWalletConnected(true)}
           />
-          <ProfileButton isWalletConnected={isWalletConnected} />
+          {/* <ProfileButton isWalletConnected={isWalletConnected} /> */}
         </aside>
         <main>
           <Routes>
@@ -92,12 +92,12 @@ const App = () => {
                 />
               }
             />
-            <Route path="/topics" element={<Topics />}>
-              <Route path="/topics/" element={<TopicSearch />} />
+            <Route path="/search" element={<Topics />}>
+              <Route path="/search/" element={<TopicSearch />} />
               <Route path=":topic" element={<TopicResults />} />
             </Route>
-            <Route path="/users" element={<Users />}>
-              <Route path="/users/" element={<UserSearch />} />
+            <Route path="/creators" element={<Users />}>
+              <Route path="/creators/" element={<UserSearch />} />
               <Route path=":addr" element={<UserResults />} />
             </Route>
           </Routes>
@@ -128,7 +128,7 @@ const Home = (props) => {
 const Topics = (props) => {
   return (
     <>
-      <header>Topics</header>
+      <header>Search image</header>
       <Outlet />
     </>
   );
@@ -137,7 +137,7 @@ const Topics = (props) => {
 const Users = () => {
   return (
     <>
-      <header>Users</header>
+      <header>Creators</header>
       <Outlet />
     </>
   );
