@@ -19,14 +19,16 @@ export const WalletSelectButton = (props) => {
   const [addressText, setAddressText] = React.useState("xxxxx...xxx");
 
   async function checkForWallet() {
-    let address = await window.arweaveWallet.getActiveAddress();
-    if (address) {
-      const firstFive = address.substring(0, 5);
-      const lastFive = address.substring(address.length - 5);
-      setAddressText(`${firstFive}...${lastFive}`);
-      props.setIsConnected(true);
+    if (window.arweaveWallet) {
+      let address = await window.arweaveWallet.getActiveAddress();
+      if (address) {
+        const firstFive = address.substring(0, 5);
+        const lastFive = address.substring(address.length - 5);
+        setAddressText(`${firstFive}...${lastFive}`);
+        props.setIsConnected(true);
+      }
+      setActiveWallet(AR_CONNECT);
     }
-    setActiveWallet(AR_CONNECT);
   }
 
   async function onWalletSelected(walletName) {
@@ -47,7 +49,7 @@ export const WalletSelectButton = (props) => {
 
   useEffect(() => {
     checkForWallet();
-  }, []);
+  }, [window.arweaveWallet]);
 
   return (
     <>
