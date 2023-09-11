@@ -61,18 +61,19 @@ export const buildQuery = ({ count, address, topic } = {}) => {
   }
   const queryObject = {
     query: `{
-   transactions(first: 100,
-     tags: [
-       {
-         name: "App-Name",
-         values: ["PublicSquare"]
-       },
-       {
-         name: "Content-Type",
-         values: ["text/plain"]
-       }
-     ]
-   ) {
+      transactions(first: ${count}, ${ownersFilter}
+        tags: [
+          {
+            name: "App-Name",
+            values: ["PublicSquare"]
+          },
+          {
+            name: "Content-Type",
+            values: ["text/plain"]
+          },
+          ${topicFilter}
+        ]
+      ) {
      edges {
        node {
          id
