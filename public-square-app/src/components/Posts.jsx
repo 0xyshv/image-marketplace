@@ -115,7 +115,7 @@ const PostItem = (props) => {
   return (
     <div className="postItem ">
       <img className="rounded-lg" src={imgSrc} alt="Profile" />
-      <div className="grid grid-cols-3 h-8 p-2">
+      <div className="grid grid-cols-3 h-8 ">
         {renderTopic(props.postInfo.topic)}
         {renderCategory(props.postInfo.category)}
         {renderContent(props.postInfo.content)}
