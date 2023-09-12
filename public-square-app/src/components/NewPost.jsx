@@ -48,7 +48,7 @@ export const NewPost = (props) => {
     }
     try {
       let result = await window.arweaveWallet.dispatch(tx);
-      setPostValue("");
+      // setPostValue("");
       setImageCategory("");
       setImageContent("");
       if (props.onPostMessage) {
