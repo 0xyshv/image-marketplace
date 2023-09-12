@@ -122,12 +122,12 @@ export const NewPost = (props) => {
     } else {
       return (
         <div className="newPost">
-          <TextareaAutosize
+          {/* <TextareaAutosize
             value={postValue}
             onChange={(e) => setPostValue(e.target.value)}
             rows="1"
             placeholder="What do you have to post?"
-          />
+          />❌ */}
           <form className="mb-3">
             <input
               type="file"
