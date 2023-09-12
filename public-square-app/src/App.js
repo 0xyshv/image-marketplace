@@ -87,12 +87,14 @@ const App = () => {
   const [isWalletConnected, setIsWalletConnected] = React.useState(false);
   const [postInfos, setPostInfos] = React.useState([]);
   const [isSearching, setIsSearching] = React.useState(false);
+
   async function waitForPost(txid) {
     setIsSearching(true);
     let posts = await waitForNewPosts(txid);
     setPostInfos(posts);
     setIsSearching(false);
   }
+
   React.useEffect(() => {
     setIsSearching(true);
     getPostInfos().then((posts) => {

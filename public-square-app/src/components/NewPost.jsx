@@ -8,8 +8,9 @@ export const NewPost = (props) => {
   const [imageCategory, setImageCategory] = React.useState("");
   const [imageContent, setImageContent] = React.useState("");
   const [imageTopic, setImageTopic] = React.useState("");
-  const [postValue, setPostValue] = React.useState("");
+  // const [postValue, setPostValue] = React.useState("");
   const [imageFile, setImageFile] = React.useState(null); // 🟡
+  const [imageBuffer, setImageBuffer] = React.useState(null); // 🟡
   const [isPosting, setIsPosting] = React.useState(false);
   const [generateTagsDisabled, setGenerateTagsDisabled] = React.useState(true);
 
@@ -34,11 +35,11 @@ export const NewPost = (props) => {
   // 🟡 Posting to arweave blockchain
   async function onPostButtonClicked() {
     setIsPosting(true);
-    let tx = await arweave.createTransaction({ data: postValue });
+    let tx = await arweave.createTransaction({ data: imageBuffer });
     tx.addTag("App-Name", "PublicSquare");
-    tx.addTag("Content-Type", "text/plain");
+    tx.addTag("Content-Type", "image/png");
     tx.addTag("Version", "1.0.1");
-    tx.addTag("Type", "post");
+    tx.addTag("Type", "file");
     // add as many tags as needed
     if (imageCategory) {
       tx.addTag("Category", imageCategory);
@@ -46,14 +47,23 @@ export const NewPost = (props) => {
     if (imageContent) {
       tx.addTag("Content", imageContent);
     }
+    if (imageTopic) {
+      tx.addTag("Topic", imageTopic);
+    }
+
     try {
-      let result = await window.arweaveWallet.dispatch(tx);
+      await window.arweaveWallet.dispatch(tx).then((res) => {
+        // print transaction response
+        console.log(res);
+        setImageCategory("");
+        setImageContent("");
+        setImageTopic("");
+      });
       // setPostValue("");
-      setImageCategory("");
-      setImageContent("");
-      if (props.onPostMessage) {
-        props.onPostMessage(result.id);
-      }
+
+      // if (props.onPostMessage) {
+      //   props.onPostMessage(result.id);
+      // }
     } catch (err) {
       console.error(err);
     }
@@ -134,7 +144,7 @@ export const NewPost = (props) => {
       return (
         <div className="newPost">
           <div className="newPostScrim" />
-          <TextareaAutosize value={postValue} readOnly={true} />
+          {/* <TextareaAutosize value={postValue} readOnly={true} /> */}
           {/* A form to post an image */}
           <div className="newPost-postRow">
             <div className="topic">
@@ -188,15 +198,17 @@ export const NewPost = (props) => {
             <input
               type="file"
               name="image"
-              accept="image/*"
+              accept="image/png"
               onChange={(e) => {
                 const file = e.target.files[0];
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onloadend = () => {
                   setImageFile(file);
+                  setImageBuffer(reader.result);
+                  // console.log(file);
                   setGenerateTagsDisabled(false);
-                  console.log(reader);
+                  // console.log(reader);
                 };
               }}
             />
