@@ -9,6 +9,7 @@ export const NewPost = (props) => {
   const [imageContent, setImageContent] = React.useState("");
   const [imageTopic, setImageTopic] = React.useState(""); // 🟡
   const [postValue, setPostValue] = React.useState("");
+  const [imageFile, setImageFile] = React.useState(null);
   const [isPosting, setIsPosting] = React.useState(false);
   const [generateTagsDisabled, setGenerateTagsDisabled] = React.useState(false);
 
@@ -70,7 +71,7 @@ export const NewPost = (props) => {
     setGenerateTagsDisabled(false);
   }
 
-  let isDisabled = postValue === "";
+  let isDisabled = imageFile === null;
 
   if (props.isLoggedIn) {
     if (isPosting) {
