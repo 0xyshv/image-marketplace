@@ -248,7 +248,7 @@ export const NewPost = (props) => {
               Generate Tags
             </button>
             <button className="submitButton" disabled={true}>
-              Upload
+              <i className="fa fa-spinner fa-spin fa-x"></i>
             </button>
           </div>
         </div>
@@ -342,19 +342,14 @@ export const NewPost = (props) => {
                   "Generate Tags"
                 )}
               </button>
-              {isPosting ? (
-                <button className="submitButton" disabled={isDisabled}>
-                  <i className="fa fa-spinner fa-spin fa-x"></i>
-                </button>
-              ) : (
-                <button
-                  className="submitButton"
-                  disabled={isDisabled}
-                  onClick={onPostButtonClicked}
-                >
-                  Upload
-                </button>
-              )}
+
+              <button
+                className="submitButton"
+                disabled={isDisabled}
+                onClick={onPostButtonClicked}
+              >
+                Upload
+              </button>
             </div>
           </form>
         </div>
