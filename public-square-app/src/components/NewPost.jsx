@@ -242,7 +242,7 @@ export const NewPost = (props) => {
               />
             </div>
           </div>
-          <div>
+          <div className="flex gap-8 justify-start w-[50%]">
             <button className="submitButton" disabled={true}>
               Generate Tags
             </button>
