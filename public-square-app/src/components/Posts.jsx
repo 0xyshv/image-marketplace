@@ -4,7 +4,7 @@ import { maxMessageLength, abbreviateAddress, getPostTime } from "../lib/api";
 
 export const Posts = (props) => {
   return (
-    <div>
+    <div className="grid grid-rows-3">
       {props.postInfos.map((postInfo) => (
         <PostItem key={postInfo.txid} postInfo={postInfo} />
       ))}
