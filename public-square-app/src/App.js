@@ -157,7 +157,7 @@ const TopicResults = () => {
     setIsSearching(true);
     setTopicPostInfos([]);
     try {
-      getPostInfos(null, topic).then((posts) => {
+      getPostInfos(null, null, topic).then((posts) => {
         setTopicPostInfos(posts);
         setIsSearching(false);
       });

@@ -24,14 +24,17 @@ export const createPostInfo = (node) => {
   const categoryTag = node.tags && node.tags.find((a) => a.name === "Category");
   const contentTag = node.tags && node.tags.find((a) => a.name === "Content");
   const topic = topicTag ? topicTag.value : null;
+  const category = categoryTag ? categoryTag.value : null;
+  const content = contentTag ? contentTag.value : null;
   const postInfo = {
     txid: node.id,
     owner: ownerAddress,
     account: account.get(ownerAddress),
     topic: topic,
     // two more tags render 🟡
-    category: categoryTag?.value,
-    content: contentTag?.value,
+    category: category,
+    content: content,
+
     height: height,
     length: node.data.size,
     timestamp: timestamp,
@@ -88,6 +91,7 @@ export const buildQuery = ({
     },`;
   }
 
+  // build dynamic query 🟡
   const queryObject = {
     query: `{
       transactions(first: ${count}, ${ownersFilter}

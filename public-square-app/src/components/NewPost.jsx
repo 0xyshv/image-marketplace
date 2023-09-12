@@ -15,11 +15,13 @@ export const NewPost = (props) => {
     let dashedTopic = getTopicString(input);
     setImageCategory(dashedTopic);
   }
+
   function onContentChanged(e) {
     let input = e.target.value;
     let dashedTopic = getTopicString(input);
     setImageContent(dashedTopic);
   }
+
   // 🟡 Posting to arweave blockchain
   async function onPostButtonClicked() {
     setIsPosting(true);
