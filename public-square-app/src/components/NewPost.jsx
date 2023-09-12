@@ -127,7 +127,7 @@ export const NewPost = (props) => {
     setImageFile(null);
   }
 
-  let isDisabled = imageFile === null;
+  let isDisabled = !imageTopic || !imageCategory || !imageContent;
 
   if (props.isLoggedIn) {
     if (isPosting) {
