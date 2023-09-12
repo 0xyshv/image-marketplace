@@ -74,7 +74,7 @@ export const NewPost = (props) => {
       const formData = new FormData(form);
       formData.append("image", imageFile);
 
-      await fetch("http://localhost:4000/get-buffer", {
+      await fetch("https://alpha-marketplace-server.onrender.com/get-buffer", {
         method: "POST",
         body: formData,
       })
