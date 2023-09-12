@@ -21,6 +21,8 @@ const PostItem = (props) => {
     props.postInfo.imgSrc || "img_avatar.png"
   );
 
+  const contentSrc = props.postInfo.contentSrc || "img_avatar.png";
+
   React.useEffect(() => {
     const getAccountInfo = async () => {
       setOwnerName(abbreviateAddress(props.postInfo.owner));
@@ -58,7 +60,7 @@ const PostItem = (props) => {
   const renderContent = (topic) => {
     if (topic)
       return (
-        <Link to={`/search/${topic}`} className="postTopic">
+        <Link to={`/search/${topic}`} className="postTopic  whitespace-nowrap">
           #{topic}
         </Link>
       );
@@ -114,8 +116,8 @@ const PostItem = (props) => {
 
   return (
     <div className="postItem ">
-      <img className="rounded-lg" src={imgSrc} alt="Profile" />
-      <div className="grid grid-cols-3 h-8 ">
+      <img className="rounded-lg h-[200px]" src={contentSrc} alt="Profile" />
+      <div className="grid grid-cols-2 grid-flow-row h-16">
         {renderTopic(props.postInfo.topic)}
         {renderCategory(props.postInfo.category)}
         {renderContent(props.postInfo.content)}

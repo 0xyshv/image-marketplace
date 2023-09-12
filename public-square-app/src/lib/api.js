@@ -34,6 +34,7 @@ export const createPostInfo = (node) => {
     category: category,
     content: content,
 
+    contentSrc: `https://arweave.net/${node.id}`,
     height: height,
     length: node.data.size,
     timestamp: timestamp,
@@ -99,11 +100,11 @@ export const buildQuery = ({
         tags: [
           {
             name: "App-Name",
-            values: ["PublicSquare"]
+            values: ["AlphaMarketplace"]
           },
           {
             name: "Content-Type",
-            values: ["text/plain"]
+            values: ["image/png"]
           }
     ]
       ) {
@@ -140,11 +141,11 @@ export const buildQuery = ({
         tags: [
           {
             name: "App-Name",
-            values: ["PublicSquare"]
+            values: ["AlphaMarketplace"]
           },
           {
             name: "Content-Type",
-            values: ["text/plain"]
+            values: ["image/png"]
           },
           ${topicFilter}
     ]
@@ -182,11 +183,11 @@ export const buildQuery = ({
         tags: [
           {
             name: "App-Name",
-            values: ["PublicSquare"]
+            values: ["AlphaMarketplace"]
           },
           {
             name: "Content-Type",
-            values: ["text/plain"]
+            values: ["image/png"]
           },
           ${categoryFilter}
     ]
@@ -224,11 +225,11 @@ export const buildQuery = ({
         tags: [
           {
             name: "App-Name",
-            values: ["PublicSquare"]
+            values: ["AlphaMarketplace"]
           },
           {
             name: "Content-Type",
-            values: ["text/plain"]
+            values: ["image/png"]
           },
           ${contentFilter}
     ]

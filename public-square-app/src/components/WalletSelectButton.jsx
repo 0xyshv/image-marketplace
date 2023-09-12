@@ -4,7 +4,7 @@ import { ArweaveWebWallet } from "arweave-wallet-connector";
 
 const webWallet = new ArweaveWebWallet(
   {
-    name: "PublicSquare Tutorial",
+    name: "AlphaMarketplace",
     logo: "https://jfbeats.github.io/ArweaveWalletConnector/placeholder.svg",
   },
   "arweave.app"

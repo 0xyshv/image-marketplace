@@ -10,9 +10,21 @@ export const NewPost = (props) => {
   const [imageTopic, setImageTopic] = React.useState("");
   // const [postValue, setPostValue] = React.useState("");
   const [imageFile, setImageFile] = React.useState(null); // 🟡
-  const [imageBuffer, setImageBuffer] = React.useState(null); // 🟡
   const [isPosting, setIsPosting] = React.useState(false);
   const [generateTagsDisabled, setGenerateTagsDisabled] = React.useState(true);
+
+  // function dataURLToBuffer(dataURL) {
+  //   const base64 = dataURL.split(",")[1];
+  //   const binaryString = window.atob(base64);
+  //   const length = binaryString.length;
+  //   const buffer = new Uint8Array(length);
+
+  //   for (let i = 0; i < length; i++) {
+  //     buffer[i] = binaryString.charCodeAt(i);
+  //   }
+
+  //   return buffer;
+  // }
 
   function onTopicChanged(e) {
     let input = e.target.value;
@@ -32,11 +44,65 @@ export const NewPost = (props) => {
     setImageContent(dashedTopic);
   }
 
+  // blob to buffer
+  function blobToBuffer(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = function () {
+        resolve(new Uint8Array(reader.result));
+      };
+      reader.onerror = function () {
+        reject(new Error("Error reading blob as buffer"));
+      };
+      reader.readAsArrayBuffer(blob);
+    });
+  }
+
   // 🟡 Posting to arweave blockchain
   async function onPostButtonClicked() {
     setIsPosting(true);
+    // get image buffer from server
+    let imageBuffer = "";
+    if (imageFile) {
+      // send imageFile to server
+      const form = document.createElement("form");
+      // Set the enctype attribute to "multipart/form-data"
+      form.setAttribute("enctype", "multipart/form-data");
+      const formData = new FormData(form);
+      formData.append("image", imageFile);
+
+      await fetch("http://localhost:4000/get-buffer", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          // Check if the response status is OK (200)
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          // Read the response as a binary blob
+          return response.blob();
+        })
+        .then((blobData) => {
+          // Convert the binary blob to a buffer (Uint8Array)
+          return blobToBuffer(blobData);
+        })
+        .then((buffer) => {
+          // Now you can work with the received buffer
+          console.log(buffer);
+          imageBuffer = buffer;
+
+          // You can use the buffer for further processing, like displaying an image
+          // displayImageFromBuffer(buffer);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
     let tx = await arweave.createTransaction({ data: imageBuffer });
-    tx.addTag("App-Name", "PublicSquare");
+    tx.addTag("App-Name", "AlphaMarketplace");
     tx.addTag("Content-Type", "image/png");
     tx.addTag("Version", "1.0.1");
     tx.addTag("Type", "file");
@@ -59,11 +125,6 @@ export const NewPost = (props) => {
         setImageContent("");
         setImageTopic("");
       });
-      // setPostValue("");
-
-      // if (props.onPostMessage) {
-      //   props.onPostMessage(result.id);
-      // }
     } catch (err) {
       console.error(err);
     }
@@ -92,7 +153,6 @@ export const NewPost = (props) => {
       }).catch((err) => {
         console.log(err);
         setGenerateTagsDisabled(false);
-        setImageFile(null);
         onCategoryChanged({
           target: {
             value: "Tag1",
@@ -134,7 +194,6 @@ export const NewPost = (props) => {
     }
 
     setGenerateTagsDisabled(false);
-    setImageFile(null);
   }
 
   let isDisabled = !imageTopic || !imageCategory || !imageContent;
@@ -205,7 +264,6 @@ export const NewPost = (props) => {
                 reader.readAsDataURL(file);
                 reader.onloadend = () => {
                   setImageFile(file);
-                  setImageBuffer(reader.result);
                   // console.log(file);
                   setGenerateTagsDisabled(false);
                   // console.log(reader);
