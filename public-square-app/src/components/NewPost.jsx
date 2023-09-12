@@ -7,8 +7,16 @@ import { arweave, getTopicString } from "../lib/api";
 export const NewPost = (props) => {
   const [imageCategory, setImageCategory] = React.useState("");
   const [imageContent, setImageContent] = React.useState("");
+  const [imageTopic, setImageTopic] = React.useState(""); // 🟡
   const [postValue, setPostValue] = React.useState("");
   const [isPosting, setIsPosting] = React.useState(false);
+  const [generateTagsDisabled, setGenerateTagsDisabled] = React.useState(false);
+
+  function onTopicChanged(e) {
+    let input = e.target.value;
+    let dashedTopic = getTopicString(input);
+    setImageTopic(dashedTopic);
+  }
 
   function onCategoryChanged(e) {
     let input = e.target.value;
@@ -51,6 +59,17 @@ export const NewPost = (props) => {
     setIsPosting(false);
   }
 
+  async function generateTags(e) {
+    e.preventDefault();
+    setGenerateTagsDisabled(true);
+    // Request server for tags using cloud vision API
+    setImageCategory("A");
+    setImageContent("B");
+    setImageTopic("C");
+
+    setGenerateTagsDisabled(false);
+  }
+
   let isDisabled = postValue === "";
 
   if (props.isLoggedIn) {
@@ -59,6 +78,7 @@ export const NewPost = (props) => {
         <div className="newPost">
           <div className="newPostScrim" />
           <TextareaAutosize value={postValue} readOnly={true} />
+          {/* A form to post an image */}
           <div className="newPost-postRow">
             <div className="topic">
               #
@@ -70,13 +90,23 @@ export const NewPost = (props) => {
                 disabled={true}
               />
             </div>
-            <div className="topic ml-[-220px]">
+            <div className="topic">
               #
               <input
                 type="text"
                 placeholder="content"
                 className="topicInput"
                 value={imageContent}
+                disabled={true}
+              />
+            </div>
+            <div className="topic">
+              #
+              <input
+                type="text"
+                placeholder="topic"
+                className="topicInput"
+                value={imageTopic}
                 disabled={true}
               />
             </div>
@@ -97,43 +127,89 @@ export const NewPost = (props) => {
             rows="1"
             placeholder="What do you have to post?"
           />
-          <div className="newPost-postRow">
-            <div
-              className="topic"
-              style={{ color: imageCategory && "rgb( 80, 162, 255)" }}
-            >
-              #
-              <input
-                type="text"
-                placeholder="category"
-                className="topicInput"
-                value={imageCategory}
-                onChange={(e) => onCategoryChanged(e)}
-              />
-            </div>
-            <div
-              className="topic ml-[-220px]"
-              style={{ color: imageContent && "rgb( 80, 162, 255)" }}
-            >
-              #
-              <input
-                type="text"
-                placeholder="content"
-                className="topicInput"
-                value={imageContent}
-                onChange={(e) => onContentChanged(e)}
-              />
-            </div>
-            <div>
-              <button
+          <form className="mb-3">
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onloadend = () => {
+                  setPostValue(reader.result);
+                  console.log(reader.result);
+                };
+              }}
+            />
+            <div className="newPost-postRow mt-3">
+              <div
+                className="topic"
+                style={{ color: imageCategory && "rgb( 80, 162, 255)" }}
+              >
+                #
+                <input
+                  type="text"
+                  placeholder="category"
+                  className="topicInput"
+                  value={imageCategory}
+                  onChange={(e) => onCategoryChanged(e)}
+                />
+              </div>
+              <div
+                className="topic"
+                style={{ color: imageContent && "rgb( 80, 162, 255)" }}
+              >
+                #
+                <input
+                  type="text"
+                  placeholder="content"
+                  className="topicInput"
+                  value={imageContent}
+                  onChange={(e) => onContentChanged(e)}
+                />
+              </div>
+              <div
+                className="topic"
+                style={{ color: imageContent && "rgb( 80, 162, 255)" }}
+              >
+                #
+                <input
+                  type="text"
+                  placeholder="topic"
+                  className="topicInput"
+                  value={imageTopic}
+                  onChange={(e) => onTopicChanged(e)}
+                />
+              </div>
+              <div>
+                {/* <button
                 className="submitButton"
                 disabled={isDisabled}
                 onClick={onPostButtonClicked}
               >
                 Post
+              </button> */}
+              </div>
+            </div>
+            <div className="flex gap-8 justify-start w-[50%]">
+              <button
+                className="submitButton"
+                disabled={generateTagsDisabled}
+                onClick={generateTags}
+              >
+                Generate Tags
+              </button>
+
+              <button
+                className="submitButton"
+                disabled={isDisabled}
+                onClick={onPostButtonClicked}
+              >
+                Upload
               </button>
             </div>
-          </div>
+          </form>
         </div>
       );
     }
