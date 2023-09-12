@@ -118,6 +118,11 @@ const PostItem = (props) => {
       <div className="postLayout pt-4">
         <img className="profileImage" src={imgSrc} alt="Profile" />
         <div>
+          <div className="grid grid-cols-3">
+            {renderTopic(props.postInfo.topic)}
+            {renderCategory(props.postInfo.category)}
+            {renderContent(props.postInfo.content)}
+          </div>
           <div className="postOwnerRow">
             <Link to={`/creators/${props.postInfo.owner}`}>{ownerName}</Link>
             <span className="gray">
@@ -130,11 +135,11 @@ const PostItem = (props) => {
             {props.postInfo.message || postMessage}
             {statusMessage && <div className="status"> {statusMessage}</div>}
           </div>❌ */}
-          <div className="grid grid-cols-3">
+          {/* <div className="grid grid-cols-3">
             {renderTopic(props.postInfo.topic)}
             {renderCategory(props.postInfo.category)}
             {renderContent(props.postInfo.content)}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
