@@ -115,14 +115,14 @@ const PostItem = (props) => {
   return (
     <div className="postItem ">
       <img className="rounded-lg" src={imgSrc} alt="Profile" />
+      <div className="grid grid-cols-3">
+        {renderTopic(props.postInfo.topic)}
+        {renderCategory(props.postInfo.category)}
+        {renderContent(props.postInfo.content)}
+      </div>
       <div className="postLayout pt-4">
         <img className="profileImage" src={imgSrc} alt="Profile" />
         <div>
-          <div className="grid grid-cols-3">
-            {renderTopic(props.postInfo.topic)}
-            {renderCategory(props.postInfo.category)}
-            {renderContent(props.postInfo.content)}
-          </div>
           <div className="postOwnerRow">
             <Link to={`/creators/${props.postInfo.owner}`}>{ownerName}</Link>
             <span className="gray">
