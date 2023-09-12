@@ -47,7 +47,7 @@ export const NewPost = (props) => {
     }
     try {
       let result = await window.arweaveWallet.dispatch(tx);
-      setPostValue("");
+      // setPostValue("");
       setImageCategory("");
       setImageContent("");
       if (props.onPostMessage) {
@@ -136,10 +136,10 @@ export const NewPost = (props) => {
                 const file = e.target.files[0];
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onloadend = () => {
-                  setPostValue(reader.result);
-                  console.log(reader.result);
-                };
+                // reader.onloadend = () => {
+                //   setPostValue(reader.result);
+                //   console.log(reader.result);
+                // };
               }}
             />
             <div className="newPost-postRow mt-3">
