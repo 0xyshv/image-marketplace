@@ -113,8 +113,9 @@ const PostItem = (props) => {
   }, [props.postInfo]);
 
   return (
-    <div className="postItem">
-      <div className="postLayout">
+    <div className="postItem ">
+      <img className="rounded-lg" src={imgSrc} alt="Profile" />
+      <div className="postLayout pt-4">
         <img className="profileImage" src={imgSrc} alt="Profile" />
         <div>
           <div className="postOwnerRow">
@@ -125,13 +126,15 @@ const PostItem = (props) => {
             </span>
             <time>{getPostTime(props.postInfo.timestamp)}</time>
           </div>
-          <div className="postRow">
+          {/* <div className="postRow">
             {props.postInfo.message || postMessage}
             {statusMessage && <div className="status"> {statusMessage}</div>}
+          </div>❌ */}
+          <div className="grid grid-cols-3">
+            {renderTopic(props.postInfo.topic)}
+            {renderCategory(props.postInfo.category)}
+            {renderContent(props.postInfo.content)}
           </div>
-          {renderTopic(props.postInfo.topic)}
-          {renderCategory(props.postInfo.category)}
-          {renderContent(props.postInfo.content)}
         </div>
       </div>
     </div>
