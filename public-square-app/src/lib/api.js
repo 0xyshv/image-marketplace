@@ -93,8 +93,9 @@ export const buildQuery = ({
   }
 
   // build dynamic query 🟡
-  const queryObjectDefault = {
-    query: `{
+  const queryObjectDefault = !(topicFilter || categoryFilter || contentFilter)
+    ? {
+        query: `{
       transactions(first: ${count}, ${ownersFilter}
         tags: [
           {
@@ -128,9 +129,10 @@ export const buildQuery = ({
      }
    }
  }`,
-  };
+      }
+    : "";
 
-  queryArray.push(queryObjectDefault);
+  if (queryObjectDefault) queryArray.push(queryObjectDefault);
 
   const queryObjectTopic = topicFilter
     ? {
