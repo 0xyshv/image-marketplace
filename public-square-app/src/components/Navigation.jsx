@@ -114,7 +114,7 @@ export const Navigation = () => {
   }
 
   return (
-    <nav className="flex flex-row justify-around w-full pt-2">
+    <nav className="flex flex-row justify-between w-2/3 pt-2">
       {/* <div className="navHeader">
         {elephantIcon}
         <div className="navLabel" style={{ lineHeight: 2.2 }}></div>
