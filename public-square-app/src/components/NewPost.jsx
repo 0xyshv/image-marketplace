@@ -7,11 +7,11 @@ import { arweave, getTopicString } from "../lib/api";
 export const NewPost = (props) => {
   const [imageCategory, setImageCategory] = React.useState("");
   const [imageContent, setImageContent] = React.useState("");
-  const [imageTopic, setImageTopic] = React.useState(""); // 🟡
+  const [imageTopic, setImageTopic] = React.useState("");
   const [postValue, setPostValue] = React.useState("");
-  const [imageFile, setImageFile] = React.useState(null);
+  const [imageFile, setImageFile] = React.useState(null); // 🟡
   const [isPosting, setIsPosting] = React.useState(false);
-  const [generateTagsDisabled, setGenerateTagsDisabled] = React.useState(false);
+  const [generateTagsDisabled, setGenerateTagsDisabled] = React.useState(true);
 
   function onTopicChanged(e) {
     let input = e.target.value;
@@ -64,9 +64,47 @@ export const NewPost = (props) => {
     e.preventDefault();
     setGenerateTagsDisabled(true);
     // Request server for tags using cloud vision API
-    setImageCategory("A");
-    setImageContent("B");
-    setImageTopic("C");
+
+    if (imageFile) {
+      // send imageFile to server
+      const form = document.createElement("form");
+      // Set the enctype attribute to "multipart/form-data"
+      form.setAttribute("enctype", "multipart/form-data");
+      const formData = new FormData(form);
+      formData.append("image", imageFile);
+
+      // formData.append("category", imageCategory);
+      // formData.append("content", imageContent);
+      // formData.append("topic", imageTopic);
+      const response = await fetch("http://localhost:4000/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      console.log(data);
+      setImageFile(null);
+
+      // set tags
+      let length = data.length;
+      length >= 1 &&
+        onCategoryChanged({
+          target: {
+            value: data[0],
+          },
+        });
+      length >= 2 &&
+        onContentChanged({
+          target: {
+            value: data[1],
+          },
+        });
+      length >= 3 &&
+        onTopicChanged({
+          target: {
+            value: data[2],
+          },
+        });
+    }
 
     setGenerateTagsDisabled(false);
   }
@@ -138,8 +176,9 @@ export const NewPost = (props) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onloadend = () => {
-                  setImageFile(reader.result);
-                  console.log(reader.result);
+                  setImageFile(file);
+                  setGenerateTagsDisabled(false);
+                  console.log(reader);
                 };
               }}
             />
