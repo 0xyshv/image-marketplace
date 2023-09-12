@@ -66,33 +66,34 @@ export const buildQuery = ({
   if (address) {
     ownersFilter = `owners: ["${address}"],`;
   }
-  let filters = [];
+  let queryArray = [];
 
+  let topicFilter = "";
   if (topic) {
-    filters.push(`{
+    topicFilter = `{
       name: "Topic",
       values: ["${topic}"]
-    }`);
+    },`;
   }
 
+  let categoryFilter = "";
   if (category) {
-    filters.push(`{
+    categoryFilter = `{
       name: "Category",
       values: ["${category}"]
-    }`);
+    },`;
   }
 
+  let contentFilter = "";
   if (content) {
-    filters.push(`{
+    contentFilter = `{
       name: "Content",
       values: ["${content}"]
-    }`);
+    },`;
   }
 
-  const filterQuery = filters.length > 0 ? filters.join(",\n") : "";
-
   // build dynamic query 🟡
-  const queryObject = {
+  const queryObjectDefault = {
     query: `{
       transactions(first: ${count}, ${ownersFilter}
         tags: [
@@ -103,9 +104,6 @@ export const buildQuery = ({
           {
             name: "Content-Type",
             values: ["text/plain"]
-          },
-          {
-            OR: [${filterQuery}]
           }
     ]
       ) {
@@ -132,7 +130,134 @@ export const buildQuery = ({
  }`,
   };
 
-  return queryObject;
+  queryArray.push(queryObjectDefault);
+
+  const queryObjectTopic = topicFilter
+    ? {
+        query: `{
+      transactions(first: ${count}, ${ownersFilter}
+        tags: [
+          {
+            name: "App-Name",
+            values: ["PublicSquare"]
+          },
+          {
+            name: "Content-Type",
+            values: ["text/plain"]
+          },
+          ${topicFilter}
+    ]
+      ) {
+     edges {
+       node {
+         id
+         owner {
+           address
+         }
+         data {
+           size
+         }
+         block {
+           height
+           timestamp
+         }
+         tags {
+           name,
+           value
+         }
+       }
+     }
+   }
+ }`,
+      }
+    : "";
+
+  if (queryObjectTopic) queryArray.push(queryObjectTopic);
+
+  const queryObjectCategory = categoryFilter
+    ? {
+        query: `{
+      transactions(first: ${count}, ${ownersFilter}
+        tags: [
+          {
+            name: "App-Name",
+            values: ["PublicSquare"]
+          },
+          {
+            name: "Content-Type",
+            values: ["text/plain"]
+          },
+          ${categoryFilter}
+    ]
+      ) {
+     edges {
+       node {
+         id
+         owner {
+           address
+         }
+         data {
+           size
+         }
+         block {
+           height
+           timestamp
+         }
+         tags {
+           name,
+           value
+         }
+       }
+     }
+   }
+ }`,
+      }
+    : "";
+
+  if (queryObjectCategory) queryArray.push(queryObjectCategory);
+
+  const queryObjectContent = contentFilter
+    ? {
+        query: `{
+      transactions(first: ${count}, ${ownersFilter}
+        tags: [
+          {
+            name: "App-Name",
+            values: ["PublicSquare"]
+          },
+          {
+            name: "Content-Type",
+            values: ["text/plain"]
+          },
+          ${contentFilter}
+    ]
+      ) {
+     edges {
+       node {
+         id
+         owner {
+           address
+         }
+         data {
+           size
+         }
+         block {
+           height
+           timestamp
+         }
+         tags {
+           name,
+           value
+         }
+       }
+     }
+   }
+ }`,
+      }
+    : "";
+  if (queryObjectContent) queryArray.push(queryObjectContent);
+
+  return queryArray;
 };
 
 // in miliseconds

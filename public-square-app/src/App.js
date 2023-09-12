@@ -37,13 +37,45 @@ async function waitForNewPosts(txid) {
 }
 
 async function getPostInfos(ownerAddress, topic, category, content) {
-  const query = buildQuery({ address: ownerAddress, topic, category, content });
-  const results = await arweave.api.post("/graphql", query).catch((err) => {
-    console.error("GraphQL query failed");
-    throw new Error(err);
+  // get query array
+  const queryArray = buildQuery({
+    address: ownerAddress,
+    topic,
+    category,
+    content,
   });
-  // const edges = results.data.data.transactions.edges;🟡
-  const edges = results?.data?.data?.transactions?.edges || [];
+  // itearte and post query in parallel for queryArray
+  const resultsDefault = await arweave.api
+    .post("/graphql", queryArray[0])
+    .catch((err) => {
+      console.error("GraphQL query failed");
+      throw new Error(err);
+    });
+  const topicResults = await arweave.api
+    .post("/graphql", queryArray[1])
+    .catch((err) => {
+      console.error("GraphQL query failed");
+      throw new Error(err);
+    });
+  const categoryResults = await arweave.api
+    .post("/graphql", queryArray[2])
+    .catch((err) => {
+      console.error("GraphQL query failed");
+      throw new Error(err);
+    });
+  const contentResults = await arweave.api
+    .post("/graphql", queryArray[3])
+    .catch((err) => {
+      console.error("GraphQL query failed");
+      throw new Error(err);
+    });
+
+  let edges = [];
+  edges = resultsDefault?.data?.data?.transactions?.edges || [];
+  edges = edges.concat(topicResults?.data?.data?.transactions?.edges || []);
+  edges = edges.concat(categoryResults?.data?.data?.transactions?.edges || []);
+  edges = edges.concat(contentResults?.data?.data?.transactions?.edges || []);
+
   console.log(edges);
   return await delayResults(
     100,
