@@ -208,9 +208,9 @@ export const NewPost = (props) => {
       return (
         <div className="newPost">
           <div className="newPostScrim" />
-          {/* <TextareaAutosize value={postValue} readOnly={true} /> */}
+          <input type="file" name="image" accept="image/png" />
           {/* A form to post an image */}
-          <div className="newPost-postRow">
+          <div className="newPost-postRow mt-3">
             <div className="topic">
               #
               <input
@@ -241,11 +241,14 @@ export const NewPost = (props) => {
                 disabled={true}
               />
             </div>
-            <div>
-              <button className="submitButton" disabled={true}>
-                Post
-              </button>
-            </div>
+          </div>
+          <div>
+            <button className="submitButton" disabled={true}>
+              Generate Tags
+            </button>
+            <button className="submitButton" disabled={true}>
+              Upload
+            </button>
           </div>
         </div>
       );
@@ -259,12 +262,6 @@ export const NewPost = (props) => {
     } else {
       return (
         <div className="newPost">
-          {/* <TextareaAutosize
-            value={postValue}
-            onChange={(e) => setPostValue(e.target.value)}
-            rows="1"
-            placeholder="What do you have to post?"
-          />❌ */}
           <form className="mb-3">
             <input
               type="file"
