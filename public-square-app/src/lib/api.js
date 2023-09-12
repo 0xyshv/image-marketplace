@@ -7,9 +7,8 @@ export const account = new Account({
   cacheTime: 3600000, // 3600000ms => 1 hour cache duration
 });
 export const maxMessageLength = 1024;
-
 export const isWellFormattedAddress = (input) => {
-  const re = /^[a-zA-Z0-9_]{43}$/;
+  const re = /^[a-zA-Z0-9_-]{43}$/;
   return re.test(input);
 };
 
