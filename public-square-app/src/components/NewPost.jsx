@@ -157,6 +157,7 @@ export const NewPost = (props) => {
         body: formData,
       }).catch((err) => {
         console.log(err);
+        setIsLoadingTags(false);
         setGenerateTagsDisabled(false);
         onCategoryChanged({
           target: {
@@ -335,16 +336,25 @@ export const NewPost = (props) => {
                 disabled={generateTagsDisabled || isLoadingTags}
                 onClick={generateTags}
               >
-                {isLoadingTags ? "Loading..." : "Generate Tags"}
+                {isLoadingTags ? (
+                  <i className="fa fa-spinner fa-spin fa-x"></i>
+                ) : (
+                  "Generate Tags"
+                )}
               </button>
-
-              <button
-                className="submitButton"
-                disabled={isDisabled}
-                onClick={onPostButtonClicked}
-              >
-                Upload
-              </button>
+              {isPosting ? (
+                <button className="submitButton" disabled={isDisabled}>
+                  <i className="fa fa-spinner fa-spin fa-x"></i>
+                </button>
+              ) : (
+                <button
+                  className="submitButton"
+                  disabled={isDisabled}
+                  onClick={onPostButtonClicked}
+                >
+                  Upload
+                </button>
+              )}
             </div>
           </form>
         </div>
