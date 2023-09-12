@@ -2,15 +2,25 @@ import React from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { arweave, getTopicString } from "../lib/api";
 
+// make it post for image 🟡
+
 export const NewPost = (props) => {
-  const [topicValue, setTopicValue] = React.useState("");
+  const [imageCategory, setImageCategory] = React.useState("");
+  const [imageContent, setImageContent] = React.useState("");
   const [postValue, setPostValue] = React.useState("");
   const [isPosting, setIsPosting] = React.useState(false);
-  function onTopicChanged(e) {
+
+  function onCategoryChanged(e) {
     let input = e.target.value;
     let dashedTopic = getTopicString(input);
-    setTopicValue(dashedTopic);
+    setImageCategory(dashedTopic);
   }
+  function onContentChanged(e) {
+    let input = e.target.value;
+    let dashedTopic = getTopicString(input);
+    setImageContent(dashedTopic);
+  }
+  // 🟡 Posting to arweave blockchain
   async function onPostButtonClicked() {
     setIsPosting(true);
     let tx = await arweave.createTransaction({ data: postValue });
@@ -18,13 +28,18 @@ export const NewPost = (props) => {
     tx.addTag("Content-Type", "text/plain");
     tx.addTag("Version", "1.0.1");
     tx.addTag("Type", "post");
-    if (topicValue) {
-      tx.addTag("Topic", topicValue);
+    // add as many tags as needed
+    if (imageCategory) {
+      tx.addTag("Category", imageCategory);
+    }
+    if (imageContent) {
+      tx.addTag("Content", imageContent);
     }
     try {
       let result = await window.arweaveWallet.dispatch(tx);
       setPostValue("");
-      setTopicValue("");
+      setImageCategory("");
+      setImageContent("");
       if (props.onPostMessage) {
         props.onPostMessage(result.id);
       }
@@ -33,6 +48,7 @@ export const NewPost = (props) => {
     }
     setIsPosting(false);
   }
+
   let isDisabled = postValue === "";
 
   if (props.isLoggedIn) {
@@ -46,9 +62,19 @@ export const NewPost = (props) => {
               #
               <input
                 type="text"
-                placeholder="topic"
+                placeholder="category"
                 className="topicInput"
-                value={topicValue}
+                value={imageCategory}
+                disabled={true}
+              />
+            </div>
+            <div className="topic ml-[-220px]">
+              #
+              <input
+                type="text"
+                placeholder="content"
+                className="topicInput"
+                value={imageContent}
                 disabled={true}
               />
             </div>
@@ -67,20 +93,33 @@ export const NewPost = (props) => {
             value={postValue}
             onChange={(e) => setPostValue(e.target.value)}
             rows="1"
-            placeholder="What do you have to say?"
+            placeholder="What do you have to post?"
           />
           <div className="newPost-postRow">
             <div
               className="topic"
-              style={{ color: topicValue && "rgb( 80, 162, 255)" }}
+              style={{ color: imageCategory && "rgb( 80, 162, 255)" }}
             >
               #
               <input
                 type="text"
-                placeholder="topic"
+                placeholder="category"
                 className="topicInput"
-                value={topicValue}
-                onChange={(e) => onTopicChanged(e)}
+                value={imageCategory}
+                onChange={(e) => onCategoryChanged(e)}
+              />
+            </div>
+            <div
+              className="topic ml-[-220px]"
+              style={{ color: imageContent && "rgb( 80, 162, 255)" }}
+            >
+              #
+              <input
+                type="text"
+                placeholder="content"
+                className="topicInput"
+                value={imageContent}
+                onChange={(e) => onContentChanged(e)}
               />
             </div>
             <div>

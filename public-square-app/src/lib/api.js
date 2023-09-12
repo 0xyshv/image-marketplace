@@ -20,12 +20,18 @@ export const createPostInfo = (node) => {
     ? parseInt(node.block.timestamp, 10) * 1000
     : -1;
   const topicTag = node.tags && node.tags.find((a) => a.name === "Topic");
+  // two more tags render 🟡
+  const categoryTag = node.tags && node.tags.find((a) => a.name === "Category");
+  const contentTag = node.tags && node.tags.find((a) => a.name === "Content");
   const topic = topicTag ? topicTag.value : null;
   const postInfo = {
     txid: node.id,
     owner: ownerAddress,
     account: account.get(ownerAddress),
     topic: topic,
+    // two more tags render 🟡
+    category: categoryTag?.value,
+    content: contentTag?.value,
     height: height,
     length: node.data.size,
     timestamp: timestamp,
@@ -45,7 +51,13 @@ export const createPostInfo = (node) => {
   return postInfo;
 };
 
-export const buildQuery = ({ count, address, topic } = {}) => {
+export const buildQuery = ({
+  count,
+  address,
+  topic,
+  category,
+  content,
+} = {}) => {
   count = Math.min(100, count || 100);
   let ownersFilter = "";
   if (address) {
@@ -59,6 +71,23 @@ export const buildQuery = ({ count, address, topic } = {}) => {
       values: ["${topic}"]
     },`;
   }
+
+  // two more tags build query 🟡
+  let categoryFilter = "";
+  if (category) {
+    categoryFilter = `{
+      name: "Category",
+      values: ["${category}"]
+    },`;
+  }
+  let contentFilter = "";
+  if (content) {
+    contentFilter = `{
+      name: "Content",
+      values: ["${content}"]
+    },`;
+  }
+
   const queryObject = {
     query: `{
       transactions(first: ${count}, ${ownersFilter}
@@ -71,7 +100,9 @@ export const buildQuery = ({ count, address, topic } = {}) => {
             name: "Content-Type",
             values: ["text/plain"]
           },
-          ${topicFilter}
+          ${topicFilter},
+          ${categoryFilter},
+          ${contentFilter}
         ]
       ) {
      edges {
@@ -96,6 +127,7 @@ export const buildQuery = ({ count, address, topic } = {}) => {
    }
  }`,
   };
+
   return queryObject;
 };
 

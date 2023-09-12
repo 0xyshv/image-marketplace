@@ -35,8 +35,8 @@ async function waitForNewPosts(txid) {
   return posts;
 }
 
-async function getPostInfos(ownerAddress, topic) {
-  const query = buildQuery({ address: ownerAddress, topic });
+async function getPostInfos(ownerAddress, topic, category, content) {
+  const query = buildQuery({ address: ownerAddress, topic, category, content });
   const results = await arweave.api.post("/graphql", query).catch((err) => {
     console.error("GraphQL query failed");
     throw new Error(err);
@@ -71,7 +71,7 @@ const App = () => {
   return (
     <div id="app">
       <div id="content">
-        <aside className="flex flex-row">
+        <aside className="flex flex-row w-full">
           <Navigation />
           <WalletSelectButton
             setIsConnected={() => setIsWalletConnected(true)}
@@ -150,7 +150,7 @@ const TopicResults = () => {
   const navigate = useNavigate();
 
   const onTopicSearch = (topic) => {
-    navigate(`/topics/${topic}`);
+    navigate(`/search/${topic}`);
   };
 
   React.useEffect(() => {
@@ -182,7 +182,7 @@ function UserResults() {
   const navigate = useNavigate();
 
   const onUserSearch = (address) => {
-    navigate(`/users/${address}`);
+    navigate(`/creators/${address}`);
   };
 
   React.useEffect(() => {

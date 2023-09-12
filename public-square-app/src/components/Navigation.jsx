@@ -114,11 +114,11 @@ export const Navigation = () => {
   }
 
   return (
-    <nav className="flex flex-row justify-between w-full align-center">
-      <div className="navHeader">
+    <nav className="flex flex-row justify-around w-full ">
+      {/* <div className="navHeader">
         {elephantIcon}
         <div className="navLabel" style={{ lineHeight: 2.2 }}></div>
-      </div>
+      </div> */}
       <Link to="/">
         {homeIcon}
         <div className="navLabel" style={{ fontWeight: isHome ? 700 : 400 }}>

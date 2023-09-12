@@ -40,7 +40,25 @@ const PostItem = (props) => {
   const renderTopic = (topic) => {
     if (topic)
       return (
-        <Link to={`/topics/${topic}`} className="postTopic">
+        <Link to={`/search/${topic}`} className="postTopic">
+          #{topic}
+        </Link>
+      );
+  };
+
+  // Two new tags render 🟡
+  const renderCategory = (topic) => {
+    if (topic)
+      return (
+        <Link to={`/search/${topic}`} className="postTopic">
+          #{topic}
+        </Link>
+      );
+  };
+  const renderContent = (topic) => {
+    if (topic)
+      return (
+        <Link to={`/search/${topic}`} className="postTopic">
           #{topic}
         </Link>
       );
@@ -100,7 +118,7 @@ const PostItem = (props) => {
         <img className="profileImage" src={imgSrc} alt="Profile" />
         <div>
           <div className="postOwnerRow">
-            <Link to={`/users/${props.postInfo.owner}`}>{ownerName}</Link>
+            <Link to={`/creators/${props.postInfo.owner}`}>{ownerName}</Link>
             <span className="gray">
               {" "}
               <span className="handle">{ownerHandle}</span> •{" "}
@@ -112,6 +130,8 @@ const PostItem = (props) => {
             {statusMessage && <div className="status"> {statusMessage}</div>}
           </div>
           {renderTopic(props.postInfo.topic)}
+          {renderCategory(props.postInfo.category)}
+          {renderContent(props.postInfo.content)}
         </div>
       </div>
     </div>
