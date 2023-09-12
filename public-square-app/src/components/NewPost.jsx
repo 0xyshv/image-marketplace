@@ -79,10 +79,27 @@ export const NewPost = (props) => {
       const response = await fetch("http://localhost:4000/upload", {
         method: "POST",
         body: formData,
+      }).catch((err) => {
+        console.log(err);
+        setGenerateTagsDisabled(false);
+        setImageFile(null);
+        onCategoryChanged({
+          target: {
+            value: "Tag1",
+          },
+        });
+        onTopicChanged({
+          target: {
+            value: "Tag3",
+          },
+        });
+        onContentChanged({
+          target: {
+            value: "Tag2",
+          },
+        });
       });
       const data = await response.json();
-      console.log(data);
-      setImageFile(null);
 
       // set tags
       let length = data.length;
@@ -107,6 +124,7 @@ export const NewPost = (props) => {
     }
 
     setGenerateTagsDisabled(false);
+    setImageFile(null);
   }
 
   let isDisabled = imageFile === null;
