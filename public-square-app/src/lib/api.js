@@ -66,30 +66,30 @@ export const buildQuery = ({
   if (address) {
     ownersFilter = `owners: ["${address}"],`;
   }
+  let filters = [];
 
-  let topicFilter = "";
   if (topic) {
-    topicFilter = `{
+    filters.push(`{
       name: "Topic",
       values: ["${topic}"]
-    },`;
+    }`);
   }
 
-  // two more tags build query 🟡
-  let categoryFilter = "";
   if (category) {
-    categoryFilter = `{
+    filters.push(`{
       name: "Category",
       values: ["${category}"]
-    },`;
+    }`);
   }
-  let contentFilter = "";
+
   if (content) {
-    contentFilter = `{
+    filters.push(`{
       name: "Content",
       values: ["${content}"]
-    },`;
+    }`);
   }
+
+  const filterQuery = filters.length > 0 ? filters.join(",\n") : "";
 
   // build dynamic query 🟡
   const queryObject = {
@@ -104,10 +104,10 @@ export const buildQuery = ({
             name: "Content-Type",
             values: ["text/plain"]
           },
-          ${topicFilter},
-          ${categoryFilter},
-          ${contentFilter}
-        ]
+          {
+            OR: [${filterQuery}]
+          }
+    ]
       ) {
      edges {
        node {

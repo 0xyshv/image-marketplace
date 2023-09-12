@@ -5,6 +5,7 @@ import {
   Outlet,
   useParams,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import { Navigation } from "./components/Navigation";
 import { WalletSelectButton } from "./components/WalletSelectButton";
@@ -147,6 +148,12 @@ const TopicResults = () => {
   const [topicPostInfos, setTopicPostInfos] = React.useState([]);
   const [isSearching, setIsSearching] = React.useState(false);
   const { topic } = useParams();
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location.search);
+  // // Access specific query parameters
+  // const tagName = queryParams.get("tagName");
+  // const tagValue = queryParams.get("tagValue");
+
   const navigate = useNavigate();
 
   const onTopicSearch = (topic) => {
