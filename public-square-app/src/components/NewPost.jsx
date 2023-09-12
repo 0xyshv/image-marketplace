@@ -1,6 +1,7 @@
 import React from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { arweave, getTopicString } from "../lib/api";
+import "font-awesome/css/font-awesome.min.css";
 
 // make it post for image 🟡
 
@@ -12,6 +13,8 @@ export const NewPost = (props) => {
   const [imageFile, setImageFile] = React.useState(null); // 🟡
   const [isPosting, setIsPosting] = React.useState(false);
   const [generateTagsDisabled, setGenerateTagsDisabled] = React.useState(true);
+  const [isLoadingTags, setIsLoadingTags] = React.useState(false); // Added for the spinner
+  const [isLoadingUpload, setIsLoadingUpload] = React.useState(false);
 
   // function dataURLToBuffer(dataURL) {
   //   const base64 = dataURL.split(",")[1];
@@ -128,11 +131,13 @@ export const NewPost = (props) => {
     } catch (err) {
       console.error(err);
     }
+    setIsLoadingUpload(false); // End loading
     setIsPosting(false);
   }
 
   async function generateTags(e) {
     e.preventDefault();
+    setIsLoadingTags(true); // Start loading
     setGenerateTagsDisabled(true);
     // Request server for tags using cloud vision API
 
@@ -192,7 +197,7 @@ export const NewPost = (props) => {
           },
         });
     }
-
+    setIsLoadingTags(false); // End loading
     setGenerateTagsDisabled(false);
   }
 
@@ -244,6 +249,13 @@ export const NewPost = (props) => {
           </div>
         </div>
       );
+    } else if (isLoadingUpload) {
+      return (
+        <div className="newPost loading">
+          <i className="fa fa-spinner fa-spin fa-3x"></i>
+        </div>
+      );
+      //🟡
     } else {
       return (
         <div className="newPost">
@@ -323,10 +335,10 @@ export const NewPost = (props) => {
             <div className="flex gap-8 justify-start w-[50%]">
               <button
                 className="submitButton"
-                disabled={generateTagsDisabled}
+                disabled={generateTagsDisabled || isLoadingTags}
                 onClick={generateTags}
               >
-                Generate Tags
+                {isLoadingTags ? "Loading..." : "Generate Tags"}
               </button>
 
               <button
