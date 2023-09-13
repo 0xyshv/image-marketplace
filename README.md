@@ -51,6 +51,7 @@ Team [AlphaDevs](https://alphadevs.dev)
 ## Links
 
 - [Deployed URL](https://arweave.net/bGFScn_7bqMGfU_MI977gEJdvk7t9_q7I17Di6Q6hYs)
+- [Presentation PDF](https://arweave.net/i45V9gaYHpt69tTSMH1ip1F--y2X8q7344G1dqa9ETY)
 - [Example UnLicensed Asset with Tags (AlphaDevs Logo)](https://arweave.net/-znpW5qVZxwS_lUwN2AyOzP2yhMa2w5Y-zvXS97MOgg)
 - [Frontend Git Repo with README](https://github.com/0xyshv/image-marketplace)
 - [Backend AI Classifier Server Repo](https://github.com/mr-harshtyagi/image-classifier-server)
