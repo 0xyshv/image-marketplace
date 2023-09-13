@@ -120,6 +120,8 @@ export const NewPost = (props) => {
       tx.addTag("Topic", imageTopic);
     }
 
+    // add license tags here 🟡
+
     try {
       await window.arweaveWallet.dispatch(tx).then((res) => {
         // print transaction response
