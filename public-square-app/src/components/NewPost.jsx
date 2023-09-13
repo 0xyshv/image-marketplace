@@ -152,8 +152,9 @@ export const NewPost = (props) => {
 
     // add license tags here 🟡
     if (licenseFee && paymentAddress) {
-      tx.addTag("License Fee", licenseFee);
-      tx.addTag("Payment Address", paymentAddress);
+      tx.addTag("License", "yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8");
+      tx.addTag("License-Fee", `One-Time-${licenseFee}`);
+      tx.addTag("Payment-Address", paymentAddress);
     }
 
     try {

@@ -24,6 +24,9 @@ export const createPostInfo = (node) => {
   // two more tags render 🟡
   const categoryTag = node.tags && node.tags.find((a) => a.name === "Category");
   const contentTag = node.tags && node.tags.find((a) => a.name === "Content");
+  const licenseFee =
+    node.tags && node.tags.find((a) => a.name === "License-Fee");
+  const licenseFeeValue = licenseFee ? licenseFee.value : null;
   const topic = topicTag ? topicTag.value : null;
   const category = categoryTag ? categoryTag.value : null;
   const content = contentTag ? contentTag.value : null;
@@ -35,6 +38,7 @@ export const createPostInfo = (node) => {
     // two more tags render 🟡
     category: category,
     content: content,
+    licenseFee: licenseFeeValue,
 
     contentSrc: `https://arweave.net/${node.id}`,
     height: height,

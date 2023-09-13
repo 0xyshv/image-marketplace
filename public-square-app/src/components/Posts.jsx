@@ -114,9 +114,26 @@ const PostItem = (props) => {
     };
   }, [props.postInfo]);
 
+  // convert One-Time-1 to 1
+  function convertLicenseFee(licenseFee) {
+    if (licenseFee) {
+      return licenseFee.split("-")[2];
+    }
+  }
+
   return (
     <div className="postItem ">
       <img className="rounded-lg h-[200px]" src={contentSrc} alt="Profile" />
+      {props.postInfo.licenseFee && (
+        <div className="flex flex-end mt-3 gap-2">
+          <div className="font-bold text-blue-500 bg-slate-100 rounded-lg px-2">
+            UDL License
+          </div>
+          <div className="font-bold text-white bg-green-500 rounded-lg px-2">
+            Fee : {convertLicenseFee(props.postInfo.licenseFee)} $U
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-2 grid-flow-row h-16">
         {renderTopic(props.postInfo.topic)}
         {renderCategory(props.postInfo.category)}
