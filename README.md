@@ -1,6 +1,6 @@
 # Alpha Marketplace
 Actually Open AI Hackathon / Arweave Bounty. 
-Team AlphaDevs (alphadevs.dev)
+Team [AlphaDevs](https://alphadevs.dev)
 
 ## Protocol Specs
 - Arweave Blockchain / Permaweb (Deploy all assets with tags and frontend app)
