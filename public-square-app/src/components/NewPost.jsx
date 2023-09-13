@@ -1,21 +1,29 @@
 import React from "react";
+import { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { arweave, getTopicString } from "../lib/api";
 import "font-awesome/css/font-awesome.min.css";
 
 // make it post for image 🟡
+export const isWellFormattedAddress = (input) => {
+  const re = /^[a-zA-Z0-9_-]{43}$/;
+  return re.test(input);
+};
 
 export const NewPost = (props) => {
   const [imageCategory, setImageCategory] = React.useState("");
   const [imageContent, setImageContent] = React.useState("");
   const [imageTopic, setImageTopic] = React.useState("");
+  const [licenseFee, setLicenseFee] = React.useState("");
+  const [paymentAddress, setPaymentAddress] = React.useState("");
   // const [postValue, setPostValue] = React.useState("");
   const [imageFile, setImageFile] = React.useState(null); // 🟡
   const [isPosting, setIsPosting] = React.useState(false);
   const [generateTagsDisabled, setGenerateTagsDisabled] = React.useState(true);
   const [isLoadingTags, setIsLoadingTags] = React.useState(false); // Added for the spinner
   const [isLoadingUpload, setIsLoadingUpload] = React.useState(false);
-
+  const [errorLicense, setErrorLicense] = useState("");
+  const [error, setError] = useState("");
   // function dataURLToBuffer(dataURL) {
   //   const base64 = dataURL.split(",")[1];
   //   const binaryString = window.atob(base64);
@@ -45,6 +53,28 @@ export const NewPost = (props) => {
     let input = e.target.value;
     let dashedTopic = getTopicString(input);
     setImageContent(dashedTopic);
+  }
+
+  function onLicenseChanged(e) {
+    let input = e.target.value;
+
+    if (/^\d*(\.\d{0,4})?$/.test(input) || input === "") {
+      setLicenseFee(input);
+      setErrorLicense(""); // reset error message
+    } else {
+      setErrorLicense("Please enter only numbers in the input.");
+    }
+  }
+  function onPaymentChanged(e) {
+    let input = e.target.value;
+
+    if (isWellFormattedAddress(input)) {
+      setPaymentAddress(input);
+      setError("");
+    } else {
+      setPaymentAddress(input);
+      setError("Invalid payment address. Please paste correct address.");
+    }
   }
 
   // blob to buffer
@@ -121,6 +151,10 @@ export const NewPost = (props) => {
     }
 
     // add license tags here 🟡
+    if (licenseFee && paymentAddress) {
+      tx.addTag("License Fee", licenseFee);
+      tx.addTag("Payment Address", paymentAddress);
+    }
 
     try {
       await window.arweaveWallet.dispatch(tx).then((res) => {
@@ -129,6 +163,8 @@ export const NewPost = (props) => {
         setImageCategory("");
         setImageContent("");
         setImageTopic("");
+        setLicenseFee("");
+        setPaymentAddress("");
       });
     } catch (err) {
       console.error(err);
@@ -245,6 +281,28 @@ export const NewPost = (props) => {
               />
             </div>
           </div>
+          <div className="flex gap-16 m-3">
+            <div className="topic">
+              #
+              <input
+                type="number"
+                placeholder="license fee"
+                className="topicInput"
+                value={licenseFee}
+                disabled={true}
+              />
+            </div>
+            <div className="topic">
+              #
+              <input
+                type="text"
+                placeholder="payment address"
+                className="topicInput"
+                value={paymentAddress}
+                disabled={true}
+              />
+            </div>
+          </div>
           <div className="flex gap-8 justify-start w-[50%]">
             <button className="submitButton" disabled={true}>
               Generate Tags
@@ -322,14 +380,39 @@ export const NewPost = (props) => {
                   onChange={(e) => onTopicChanged(e)}
                 />
               </div>
-              <div>
-                {/* <button
-                className="submitButton"
-                disabled={isDisabled}
-                onClick={onPostButtonClicked}
-              >
-                Post
-              </button> */}
+            </div>
+            <div className="font-bold text-2xl mb-3 text-white">
+              Add License (UDL) - Optional
+            </div>
+            <div className="flex gap-16 mb-4">
+              <div className="topic">
+                #
+                <input
+                  type="text"
+                  placeholder="license fee"
+                  className="topicInput"
+                  value={licenseFee}
+                  onChange={(e) => onLicenseChanged(e)}
+                  pattern="^\d*(\.\d{0,4})?$"
+                />
+                {errorLicense && (
+                  <p style={{ color: "red", fontSize: "10px" }}>
+                    {errorLicense}
+                  </p>
+                )}
+              </div>
+              <div className="topic">
+                #
+                <input
+                  type="text"
+                  placeholder="payment address"
+                  className="topicInput"
+                  value={paymentAddress}
+                  onChange={(e) => onPaymentChanged(e)}
+                />
+                {error && (
+                  <p style={{ color: "red", fontSize: "10px" }}>{error}</p>
+                )}
               </div>
             </div>
             <div className="flex gap-8 justify-start w-[50%]">
